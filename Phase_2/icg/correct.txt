@@ -1,0 +1,20 @@
+for(float a=50,b=20,c=30,d;e<f;g+=1){
+
+    while(h<i){
+
+        if(k>=l){
+            int m,n,o=20,p=90;
+            m+=90;
+        }
+
+        else{
+            int q,r;
+        }
+
+    }
+
+
+}
+
+
+}

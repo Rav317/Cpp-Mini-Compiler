@@ -30,7 +30,6 @@ digit [0-9]
 {digit}+.{digit}+ {yylval = strdup(yytext);return FLOAT;}
 {alpha}({alpha}|{digit})* {yylval = strdup(yytext);return ID;}
 {alpha}({alpha}|{digit})*"\.h"?  {yylval = strdup(yytext);return H;}
-\" {yylval = strdup(yytext); return T_QUOTE;}
 \".*\" {yylval = strdup(yytext);return STRING;}
 "<" {yylval = strdup(yytext);return T_lt;}
 ">"     {yylval = strdup(yytext);return T_gt;}
