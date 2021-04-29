@@ -52,6 +52,7 @@ digit [0-9]
 "}"    {yylval = strdup(yytext);return T_RCBKT;}
 "("    {yylval = strdup(yytext);return T_LRBKT;}
 ")"    {yylval = strdup(yytext);return T_RRBKT;}
+";"    {yylval = strdup(yytext);return T_SEMICOLON;}
 
 .    return yytext[0];
 
