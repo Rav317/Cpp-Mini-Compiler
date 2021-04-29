@@ -59,15 +59,12 @@ LOOPS
       | IF T_LRBKT COND T_RRBKT {ifelse1();} LOOPBODY{ifelse2();} ELSE LOOPBODY{ifelse3();}
       ;
 
-TERNARY_EXPR
-      :  T_LRBKT TERNARY_COND T_RRBKT {ternary1();} T_ques statement{ternary2();} T_colon statement{ternary3();}
-      ;
 
 LOOPBODY
-  	  : T_LCBKT LOOPC T_RCBKT
-  	  | T_SEMICOLON
-  	  | statement T_SEMICOLON
-  	  ;
+      : T_LCBKT LOOPC T_RCBKT
+      | T_SEMICOLON
+      | statement T_SEMICOLON
+      ;
 
 LOOPC
       : LOOPC statement T_SEMICOLON
@@ -83,6 +80,11 @@ statement
       | PRINT
       ;
 
+
+TERNARY_EXPR
+      :  T_LRBKT TERNARY_COND T_RRBKT {ternary1();} T_ques statement{ternary2();} T_colon statement{ternary3();}
+      ;
+
 TERNARY_COND  : T_B {codegen_assigna();}
               | T_B T_and{codegen_assigna();} TERNARY_COND
               | T_B {codegen_assigna();}T_or TERNARY_COND
@@ -93,13 +95,15 @@ T_B : T_V T_EQ{push();}T_EQ{push();} LIT
   | T_V T_GT{push();}T_F
   | T_V T_LT{push();}T_F
   | T_V T_not{push();} T_EQ{push();} LIT
-  |T_LRBKT T_B T_RRBKT
+  | T_LRBKT T_B T_RRBKT
   | T_V {pushab();}
   ;
 
 T_F :T_EQ{push();}LIT
   |LIT{pusha();}
   ;
+
+
 
 COND  : B {codegen_assigna();}
       | B T_and{codegen_assigna();} COND
@@ -129,10 +133,10 @@ ASSIGN_EXPR
       ;
 
 EXP
-	  : ADDSUB 
-	  | EXP T_LT {push();} ADDSUB {codegen();}
-	  | EXP T_GT {push();} ADDSUB {codegen();}
-	  ;
+    : ADDSUB 
+    | EXP T_LT {push();} ADDSUB {codegen();}
+    | EXP T_GT {push();} ADDSUB {codegen();}
+    ;
 
 ADDSUB
       : TERM
@@ -141,15 +145,15 @@ ADDSUB
       ;
 
 TERM
-	  : FACTOR
+    : FACTOR
       | TERM T_MUL {push();} FACTOR {codegen();}
       | TERM T_DIV {push();} FACTOR {codegen();}
       ;
 
 FACTOR
-	  : LIT
-	  | T_LRBKT EXP T_RRBKT
-  	;
+    : LIT
+    | T_LRBKT EXP T_RRBKT
+    ;
 
 PRINT
       : COUT T_LT T_LT STRING
@@ -278,10 +282,10 @@ printf("%s = %s %s %s %s\n",temp,st[top-3],st[top-2],st[top-1],st[top]);
 if(strlen(st[top])==1)
 {
   char t[20];
-	strcpy(t,st[top-2]);
-	strcat(t,st[top-1]);
+  strcpy(t,st[top-2]);
+  strcat(t,st[top-1]);
   // >" "
-	q[quadlen].op = (char*)malloc(sizeof(char)*strlen(t));
+  q[quadlen].op = (char*)malloc(sizeof(char)*strlen(t));
   q[quadlen].arg1 = (char*)malloc(sizeof(char)*strlen(st[top-3]));
   q[quadlen].arg2 = (char*)malloc(sizeof(char)*strlen(st[top]));
   q[quadlen].res = (char*)malloc(sizeof(char)*strlen(temp));
@@ -294,7 +298,7 @@ if(strlen(st[top])==1)
 }
 else // cases like i < 0 "  "
 {
-	q[quadlen].op = (char*)malloc(sizeof(char)*strlen(st[top-2]));
+  q[quadlen].op = (char*)malloc(sizeof(char)*strlen(st[top-2]));
   q[quadlen].arg1 = (char*)malloc(sizeof(char)*strlen(st[top-3]));
   q[quadlen].arg2 = (char*)malloc(sizeof(char)*strlen(st[top-1]));
   q[quadlen].res = (char*)malloc(sizeof(char)*strlen(temp));
