@@ -33,10 +33,10 @@ digit [0-9]
 \".*\" {yylval = strdup(yytext);return STRING;}
 "<" {yylval = strdup(yytext);return T_LT;}
 ">"     {yylval = strdup(yytext);return T_GT;}
-"="     {yylval = strdup(yytext);return T_EQ;}
-"<="    {yylval = strdup(yytext);return T_lteq;}
-">="    {yylval = strdup(yytext);return T_gteq;}
-"=="    {yylval = strdup(yytext);return T_eqeq;}
+"="     {yylvalN = strdup(yytext);return T_EQ;}
+"<="    {yylvalN = strdup(yytext);return T_LTEQ;}
+">="    {yylvalN = strdup(yytext);return T_GTEQ;}
+"=="    {yylvalN = strdup(yytext);return T_eqeq;}
 "!="    {yylval = strdup(yytext);return T_neq;}
 "+"     {yylval = strdup(yytext);return T_PL;}
 "-"     {yylval = strdup(yytext);return T_MIN;}
@@ -44,7 +44,7 @@ digit [0-9]
 "/"     {yylval = strdup(yytext);return T_DIV;}
 "++"    {yylval = strdup(yytext);return T_incr;}
 "--"    {yylval = strdup(yytext);return T_decr;}
-"!"     {yylval = strdup(yytext);return T_neq;}
+"!"     {yylval = strdup(yytext);return T_;}
 "||"    {yylval = strdup(yytext);return T_or;}
 "&&"    {yylval = strdup(yytext);return T_and;}
 

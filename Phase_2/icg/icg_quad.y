@@ -21,9 +21,7 @@
 %}
 
 %start S
-%token T_ID T_NUM T_LT T_GT T_lteq T_gteq T_neq T_noteq T_eqeq T_and T_or T_incr T_decr T_not T_EQ WHILE T_INT T_CHAR T_FLOAT T_VOID T_HEADER T_MAIN T_INCLUDE BREAK CONTINUE IF ELSE COUT STRING T_FOR ENDL T_ques T_colon T_LCBKT T_RCBKT T_LRBKT T_RRBKT T_SEMICOLON
-
-%token T_PL T_MIN T_MUL T_DIV
+%token T_ID T_NUM T_LT T_GT T_AND T_OR T_NOT T_EQ T_WHILE T_INT T_CHAR T_FLOAT T_VOID T_HEADER T_MAIN T_INCLUDE T_IF T_ELSE T_COUT T_STRING T_FOR T_ENDL T_LCBKT T_RCBKT T_RLBKT T_RRBKT T_SEMICOLON T_PL T_MIN T_MUL T_DIV
 %left T_LT T_GT
 %left T_PL T_MIN
 %left T_MUL T_DIV
@@ -54,9 +52,9 @@ C
       ;
 
 LOOPS
-      : WHILE {while1();} T_LRBKT COND T_RRBKT{while2();} LOOPBODY{while3();}
-      | T_FOR T_LRBKT ASSIGN_EXPR{for1();} T_SEMICOLON COND{for2();} T_SEMICOLON statement{for3();} T_RRBKT LOOPBODY{for4();}
-      | IF T_LRBKT COND T_RRBKT {ifelse1();} LOOPBODY{ifelse2();} ELSE LOOPBODY{ifelse3();}
+      : T_WHILE {while1();} T_RLBKT COND T_RRBKT{while2();} LOOPBODY{while3();}
+      | T_FOR T_RLBKT ASSIGN_EXPR{for1();} T_SEMICOLON COND{for2();} T_SEMICOLON statement{for3();} T_RRBKT LOOPBODY{for4();}
+      | T_IF T_RLBKT COND T_RRBKT {ifelse1();} LOOPBODY{ifelse2();} T_ELSE LOOPBODY{ifelse3();}
       ;
 
 
@@ -76,46 +74,22 @@ LOOPC
 statement
       : ASSIGN_EXPR
       | EXP
-      | TERNARY_EXPR
       | PRINT
       ;
 
 
-TERNARY_EXPR
-      :  T_LRBKT TERNARY_COND T_RRBKT {ternary1();} T_ques statement{ternary2();} T_colon statement{ternary3();}
-      ;
-
-TERNARY_COND  : T_B {codegen_assigna();}
-              | T_B T_and{codegen_assigna();} TERNARY_COND
-              | T_B {codegen_assigna();}T_or TERNARY_COND
-              | T_not T_B{codegen_assigna();}
-              ;
-
-T_B : T_V T_EQ{push();}T_EQ{push();} LIT
-  | T_V T_GT{push();}T_F
-  | T_V T_LT{push();}T_F
-  | T_V T_not{push();} T_EQ{push();} LIT
-  | T_LRBKT T_B T_RRBKT
-  | T_V {pushab();}
-  ;
-
-T_F :T_EQ{push();}LIT
-  |LIT{pusha();}
-  ;
-
-
 
 COND  : B {codegen_assigna();}
-      | B T_and{codegen_assigna();} COND
-      | B {codegen_assigna();}T_or COND
-      | T_not B{codegen_assigna();}
+      | T_AND {codegen_assigna();} COND
+      | B {codegen_assigna();}T_OR COND
+      | T_NOT B{codegen_assigna();}
       ;
 
 B : V T_EQ{push();}T_EQ{push();} LIT
   | V T_GT{push();}F
   | V T_LT{push();}F
-  | V T_not{push();} T_EQ{push();} LIT
-  |T_LRBKT B T_RRBKT
+  | V T_NOT{push();} T_EQ{push();} LIT
+  |T_RLBKT B T_RRBKT
   | V {pushab();}
   ;
 
@@ -125,7 +99,6 @@ F :T_EQ{push();}LIT
 
 V : T_ID{push();}
 
-T_V : T_ID{pushx();}
 
 ASSIGN_EXPR
       : LIT {push();} T_EQ {push();} EXP {codegen_assign();}
@@ -134,13 +107,13 @@ ASSIGN_EXPR
 
 EXP
     : ADDSUB 
-    | EXP T_LT {push();} ADDSUB {codegen();}
-    | EXP T_GT {push();} ADDSUB {codegen();}
+    | EXP T_LT {push();} EXP {codegen();}
+    | EXP T_GT {push();} EXP {codegen();}
     ;
 
 ADDSUB
       : TERM
-      | EXP T_PL {push();} TERM {codegen();}
+      | EXP T_PL {push();}  TERM {codegen();}
       | EXP T_MIN {push();} TERM {codegen();}
       ;
 
@@ -152,12 +125,12 @@ TERM
 
 FACTOR
     : LIT
-    | T_LRBKT EXP T_RRBKT
+    | T_RLBKT EXP T_RRBKT
     ;
 
 PRINT
-      : COUT T_LT T_LT STRING
-      | COUT T_LT T_LT STRING T_LT T_LT ENDL
+      : T_COUT T_LT T_LT T_STRING
+      | T_COUT T_LT T_LT T_STRING T_LT T_LT T_ENDL
       ;
 LIT
       : T_ID {push();}
@@ -193,9 +166,9 @@ int main(int argc,char *argv[])
   yyin = fopen("correct.txt","r");
   if(!yyparse())  //yyparse-> 0 if success
   {
-    printf("Parsing Complete\n");
-    printf("---------------------Quadruples-------------------------\n\n");
-    printf("Operator \t Arg1 \t\t Arg2 \t\t Result \n");
+    //printf("Parsing Complete\n");
+    //printf("---------------------Quadruples-------------------------\n\n");
+    //printf("Operator \t Arg1 \t\t Arg2 \t\t Result \n");
     int i;
     for(i=0;i<quadlen;i++)
     {
@@ -713,87 +686,3 @@ void for4()
     return;
 }
 
-void ternary1()
-{
-   lnum++;
-   strcpy(temp,"T");
-   sprintf(tmp_i, "%d", temp_i);
-   strcat(temp,tmp_i);
-   //printf("%s = not %s\n",temp,st[top]);
-   q[quadlen].op = (char*)malloc(sizeof(char)*4);
-      q[quadlen].arg1 = (char*)malloc(sizeof(char)*strlen(st[top]));
-      q[quadlen].arg2 = NULL;
-      q[quadlen].res = (char*)malloc(sizeof(char)*strlen(temp));
-      strcpy(q[quadlen].op,"not");
-      strcpy(q[quadlen].arg1,st[top]);
-      strcpy(q[quadlen].res,temp);
-      quadlen++;
-   //printf("if %s goto L%d\n",temp,lnum);
-   q[quadlen].op = (char*)malloc(sizeof(char)*3);
-      q[quadlen].arg1 = (char*)malloc(sizeof(char)*strlen(temp));
-      q[quadlen].arg2 = NULL;
-      q[quadlen].res = (char*)malloc(sizeof(char)*(lnum+2));
-      strcpy(q[quadlen].op,"if");
-      strcpy(q[quadlen].arg1,temp);
-      char x[10];
-      sprintf(x,"%d",lnum);
-      char l[]="L";
-      strcpy(q[quadlen].res,strcat(l,x));
-      quadlen++;
-
-   temp_i++;
-   label[++ltop]=lnum;
-
-   return;
-}
-
-void ternary2()
-{
-  int x;
-  lnum++;
-  x=label[ltop--];
-  //printf("goto L%d\n",lnum);
-  q[quadlen].op = (char*)malloc(sizeof(char)*5);
-      q[quadlen].arg1 = NULL;
-      q[quadlen].arg2 = NULL;
-      q[quadlen].res = (char*)malloc(sizeof(char)*(lnum+2));
-      strcpy(q[quadlen].op,"goto");
-      char jug[10];
-      sprintf(jug,"%d",lnum);
-      char l[]="L";
-      strcpy(q[quadlen].res,strcat(l,jug));
-      quadlen++;
-  //printf("L%d: \n",x);
-  q[quadlen].op = (char*)malloc(sizeof(char)*6);
-      q[quadlen].arg1 = NULL;
-      q[quadlen].arg2 = NULL;
-      q[quadlen].res = (char*)malloc(sizeof(char)*(x+2));
-      strcpy(q[quadlen].op,"Label");
-      char jug1[10];
-      sprintf(jug1,"%d",x);
-      char l1[]="L";
-      strcpy(q[quadlen].res,strcat(l1,jug1));
-      quadlen++;
-      label[++ltop]=lnum;
-  return;
-}
-
-void ternary3()
-{
-  int y;
-  y=label[ltop--];
-  //printf("L%d: \n",y);
-  q[quadlen].op = (char*)malloc(sizeof(char)*6);
-      q[quadlen].arg1 = NULL;
-      q[quadlen].arg2 = NULL;
-      q[quadlen].res = (char*)malloc(sizeof(char)*(y+2));
-      strcpy(q[quadlen].op,"Label");
-      char x[10];
-      sprintf(x,"%d",y);
-      char l[]="L";
-      strcpy(q[quadlen].res,strcat(l,x));
-      quadlen++;
-  lnum++;
-
-  return;
-}

@@ -49,93 +49,71 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    ID = 258,
-    NUM = 259,
-    T_lt = 260,
-    T_gt = 261,
-    T_lteq = 262,
-    T_gteq = 263,
-    T_neq = 264,
-    T_noteq = 265,
-    T_eqeq = 266,
-    T_and = 267,
-    T_or = 268,
-    T_incr = 269,
-    T_decr = 270,
-    T_not = 271,
-    T_eq = 272,
-    WHILE = 273,
-    INT = 274,
-    CHAR = 275,
-    FLOAT = 276,
-    VOID = 277,
-    H = 278,
-    MAINTOK = 279,
-    INCLUDE = 280,
-    BREAK = 281,
-    CONTINUE = 282,
-    IF = 283,
-    ELSE = 284,
-    COUT = 285,
-    STRING = 286,
-    FOR = 287,
-    ENDL = 288,
-    T_ques = 289,
-    T_colon = 290,
-    T_LCBKT = 291,
-    T_RCBKT = 292,
-    T_LRBKT = 293,
-    T_RRBKT = 294,
-    T_SEMICOLON = 295,
-    T_pl = 296,
-    T_min = 297,
-    T_mul = 298,
-    T_div = 299
+    T_ID = 258,
+    T_NUM = 259,
+    T_LT = 260,
+    T_GT = 261,
+    T_AND = 262,
+    T_OR = 263,
+    T_NOT = 264,
+    T_EQ = 265,
+    T_WHILE = 266,
+    T_INT = 267,
+    T_CHAR = 268,
+    T_FLOAT = 269,
+    T_VOID = 270,
+    T_HEADER = 271,
+    T_MAIN = 272,
+    T_INCLUDE = 273,
+    T_IF = 274,
+    T_ELSE = 275,
+    T_COUT = 276,
+    T_STRING = 277,
+    T_FOR = 278,
+    T_ENDL = 279,
+    T_LCBKT = 280,
+    T_RCBKT = 281,
+    T_RLBKT = 282,
+    T_RRBKT = 283,
+    T_SEMICOLON = 284,
+    T_PL = 285,
+    T_MIN = 286,
+    T_MUL = 287,
+    T_DIV = 288
   };
 #endif
 /* Tokens.  */
-#define ID 258
-#define NUM 259
-#define T_lt 260
-#define T_gt 261
-#define T_lteq 262
-#define T_gteq 263
-#define T_neq 264
-#define T_noteq 265
-#define T_eqeq 266
-#define T_and 267
-#define T_or 268
-#define T_incr 269
-#define T_decr 270
-#define T_not 271
-#define T_eq 272
-#define WHILE 273
-#define INT 274
-#define CHAR 275
-#define FLOAT 276
-#define VOID 277
-#define H 278
-#define MAINTOK 279
-#define INCLUDE 280
-#define BREAK 281
-#define CONTINUE 282
-#define IF 283
-#define ELSE 284
-#define COUT 285
-#define STRING 286
-#define FOR 287
-#define ENDL 288
-#define T_ques 289
-#define T_colon 290
-#define T_LCBKT 291
-#define T_RCBKT 292
-#define T_LRBKT 293
-#define T_RRBKT 294
-#define T_SEMICOLON 295
-#define T_pl 296
-#define T_min 297
-#define T_mul 298
-#define T_div 299
+#define T_ID 258
+#define T_NUM 259
+#define T_LT 260
+#define T_GT 261
+#define T_AND 262
+#define T_OR 263
+#define T_NOT 264
+#define T_EQ 265
+#define T_WHILE 266
+#define T_INT 267
+#define T_CHAR 268
+#define T_FLOAT 269
+#define T_VOID 270
+#define T_HEADER 271
+#define T_MAIN 272
+#define T_INCLUDE 273
+#define T_IF 274
+#define T_ELSE 275
+#define T_COUT 276
+#define T_STRING 277
+#define T_FOR 278
+#define T_ENDL 279
+#define T_LCBKT 280
+#define T_RCBKT 281
+#define T_RLBKT 282
+#define T_RRBKT 283
+#define T_SEMICOLON 284
+#define T_PL 285
+#define T_MIN 286
+#define T_MUL 287
+#define T_DIV 288
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
