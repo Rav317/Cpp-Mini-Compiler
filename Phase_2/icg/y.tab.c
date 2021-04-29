@@ -2011,13 +2011,16 @@ int main(int argc,char *argv[])
   yyin = fopen("correct.txt","r");
   if(!yyparse())  //yyparse-> 0 if success
   {
-    printf("Parsing Complete\n");
-    printf("---------------------Quadruples-------------------------\n\n");
-    printf("Operator \t Arg1 \t\t Arg2 \t\t Result \n");
+    //printf("Parsing Complete\n");
+    //printf("---------------------Quadruples-------------------------\n\n");
+    //printf("Operator \t Arg1 \t\t Arg2 \t\t Result \n");
     int i;
+
+    char null[] = "NULL";
+
     for(i=0;i<quadlen;i++)
     {
-        printf("%-8s \t %-8s \t %-8s \t %-6s \n",q[i].op,q[i].arg1,q[i].arg2,q[i].res);
+        printf("%-8s \t %-8s \t %-8s \t %-6s \n",q[i].op?q[i].op:null,q[i].arg1?q[i].arg1:null,q[i].arg2?q[i].arg2:null,q[i].res?q[i].res:null);
     }
   }
   else

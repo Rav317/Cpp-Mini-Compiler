@@ -89,7 +89,7 @@ B : V T_EQ{push();}T_EQ{push();} LIT
   | V T_GT{push();}F
   | V T_LT{push();}F
   | V T_NOT{push();} T_EQ{push();} LIT
-  |T_RLBKT B T_RRBKT
+  | T_RLBKT B T_RRBKT
   | V {pushab();}
   ;
 
@@ -170,9 +170,12 @@ int main(int argc,char *argv[])
     //printf("---------------------Quadruples-------------------------\n\n");
     //printf("Operator \t Arg1 \t\t Arg2 \t\t Result \n");
     int i;
+
+    char null[] = "NULL";
+
     for(i=0;i<quadlen;i++)
     {
-        printf("%-8s \t %-8s \t %-8s \t %-6s \n",q[i].op,q[i].arg1,q[i].arg2,q[i].res);
+        printf("%-8s \t %-8s \t %-8s \t %-6s \n",q[i].op?q[i].op:null,q[i].arg1?q[i].arg1:null,q[i].arg2?q[i].arg2:null,q[i].res?q[i].res:null);
     }
   }
   else
