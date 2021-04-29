@@ -21,7 +21,7 @@
 %}
 
 %start S
-%token ID NUM T_lt T_gt T_lteq T_gteq T_neq T_noteq T_eqeq T_and T_or T_incr T_decr T_not T_eq WHILE INT CHAR FLOAT VOID H MAINTOK INCLUDE BREAK CONTINUE IF ELSE COUT STRING FOR ENDL T_ques T_colon
+%token ID NUM T_lt T_gt T_lteq T_gteq T_neq T_noteq T_eqeq T_and T_or T_incr T_decr T_not T_eq WHILE INT CHAR FLOAT VOID H MAINTOK INCLUDE BREAK CONTINUE IF ELSE COUT STRING FOR ENDL T_ques T_colon T_LCBKT T_RCBKT T_LRBKT T_RRBKT
 
 %token T_pl T_min T_mul T_div
 %left T_lt T_gt
@@ -35,7 +35,6 @@ S
 
 START
       : INCLUDE T_lt H T_gt MAIN
-      | INCLUDE "\"" H "\"" MAIN
       ;
 
 MAIN
@@ -44,7 +43,7 @@ MAIN
       ;
 
 BODY
-      : '{' C '}'
+      : T_LCBKT C T_RCBKT
       ;
 
 C
@@ -55,17 +54,17 @@ C
       ;
 
 LOOPS
-      : WHILE {while1();} '(' COND ')'{while2();} LOOPBODY{while3();}
-      | FOR '(' ASSIGN_EXPR{for1();} ';' COND{for2();} ';' statement{for3();} ')' LOOPBODY{for4();}
-      | IF '(' COND ')' {ifelse1();} LOOPBODY{ifelse2();} ELSE LOOPBODY{ifelse3();}
-      | IF '(' COND ')' {if1();} LOOPBODY{if3();};
+      : WHILE {while1();} T_LRBKT COND T_RRBKT{while2();} LOOPBODY{while3();}
+      | FOR T_LRBKT ASSIGN_EXPR{for1();} ';' COND{for2();} ';' statement{for3();} T_RRBKT LOOPBODY{for4();}
+      | IF T_LRBKT COND T_RRBKT {ifelse1();} LOOPBODY{ifelse2();} ELSE LOOPBODY{ifelse3();}
+      | IF T_LRBKT COND T_RRBKT {if1();} LOOPBODY{if3();};
 
 TERNARY_EXPR
-      :  '(' TERNARY_COND ')' {ternary1();} T_ques statement{ternary2();} T_colon statement{ternary3();}
+      :  T_LRBKT TERNARY_COND T_RRBKT {ternary1();} T_ques statement{ternary2();} T_colon statement{ternary3();}
       ;
 
 LOOPBODY
-  	  : '{' LOOPC '}'
+  	  : T_LCBKT LOOPC T_RCBKT
   	  | ';'
   	  | statement ';'
   	  ;
@@ -94,7 +93,7 @@ T_B : T_V T_eq{push();}T_eq{push();} LIT
   | T_V T_gt{push();}T_F
   | T_V T_lt{push();}T_F
   | T_V T_not{push();} T_eq{push();} LIT
-  |'(' T_B ')'
+  |T_LRBKT T_B T_RRBKT
   | T_V {pushab();}
   ;
 
@@ -112,7 +111,7 @@ B : V T_eq{push();}T_eq{push();} LIT
   | V T_gt{push();}F
   | V T_lt{push();}F
   | V T_not{push();} T_eq{push();} LIT
-  |'(' B ')'
+  |T_LRBKT B T_RRBKT
   | V {pushab();}
   ;
 
@@ -149,7 +148,7 @@ TERM
 
 FACTOR
 	  : LIT
-	  | '(' EXP ')'
+	  | T_LRBKT EXP T_RRBKT
   	;
 
 PRINT

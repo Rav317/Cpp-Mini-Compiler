@@ -48,6 +48,11 @@ digit [0-9]
 "||"    {yylval = strdup(yytext);return T_or;}
 "&&"    {yylval = strdup(yytext);return T_and;}
 
+"{"    {yylval = strdup(yytext);return T_LCBKT;}
+"}"    {yylval = strdup(yytext);return T_RCBKT;}
+"("    {yylval = strdup(yytext);return T_LRBKT;}
+")"    {yylval = strdup(yytext);return T_RRBKT;}
+
 .    return yytext[0];
 
 %%
