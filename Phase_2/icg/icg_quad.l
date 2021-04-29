@@ -25,7 +25,7 @@ digit [0-9]
 "char" {yylval = strdup(yytext);return T_CHAR;}
 "void" {yylval = strdup(yytext);return T_VOID;}
 "#include" {yylval = strdup(yytext);return T_INCLUDE;}
-"main()" {yylval = strdup(yytext);return T_MAINTOK;}
+"main()" {yylval = strdup(yytext);return T_MAIN;}
 {digit}+    {yylval = strdup(yytext);return T_NUM;}
 {digit}+.{digit}+ {yylval = strdup(yytext);return T_FLOAT;}
 {alpha}({alpha}|{digit})* {yylval = strdup(yytext);return T_ID;}
