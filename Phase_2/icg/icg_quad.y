@@ -21,12 +21,12 @@
 %}
 
 %start S
-%token ID NUM T_lt T_gt T_lteq T_gteq T_neq T_noteq T_eqeq T_and T_or T_incr T_decr T_not T_eq WHILE INT CHAR FLOAT VOID H MAINTOK INCLUDE BREAK CONTINUE IF ELSE COUT STRING FOR ENDL T_ques T_colon T_LCBKT T_RCBKT T_LRBKT T_RRBKT T_SEMICOLON
+%token T_ID T_NUM T_LT T_GT T_lteq T_gteq T_neq T_noteq T_eqeq T_and T_or T_incr T_decr T_not T_EQ WHILE T_INT T_CHAR T_FLOAT T_VOID T_HEADER T_MAINTOK T_INCLUDE BREAK CONTINUE IF ELSE COUT STRING T_FOR ENDL T_ques T_colon T_LCBKT T_RCBKT T_LRBKT T_RRBKT T_SEMICOLON
 
-%token T_pl T_min T_mul T_div
-%left T_lt T_gt
-%left T_pl T_min
-%left T_mul T_div
+%token T_PL T_MIN T_MUL T_DIV
+%left T_LT T_GT
+%left T_PL T_MIN
+%left T_MUL T_DIV
 
 %%
 S
@@ -34,12 +34,12 @@ S
       ;
 
 START
-      : INCLUDE T_lt H T_gt MAIN
+      : T_INCLUDE T_LT T_HEADER T_GT MAIN
       ;
 
 MAIN
-      : VOID MAINTOK BODY
-      | INT MAINTOK BODY
+      : T_VOID T_MAINTOK BODY
+      | T_INT T_MAINTOK BODY
       ;
 
 BODY
@@ -55,7 +55,7 @@ C
 
 LOOPS
       : WHILE {while1();} T_LRBKT COND T_RRBKT{while2();} LOOPBODY{while3();}
-      | FOR T_LRBKT ASSIGN_EXPR{for1();} T_SEMICOLON COND{for2();} T_SEMICOLON statement{for3();} T_RRBKT LOOPBODY{for4();}
+      | T_FOR T_LRBKT ASSIGN_EXPR{for1();} T_SEMICOLON COND{for2();} T_SEMICOLON statement{for3();} T_RRBKT LOOPBODY{for4();}
       | IF T_LRBKT COND T_RRBKT {ifelse1();} LOOPBODY{ifelse2();} ELSE LOOPBODY{ifelse3();}
       ;
 
@@ -89,15 +89,15 @@ TERNARY_COND  : T_B {codegen_assigna();}
               | T_not T_B{codegen_assigna();}
               ;
 
-T_B : T_V T_eq{push();}T_eq{push();} LIT
-  | T_V T_gt{push();}T_F
-  | T_V T_lt{push();}T_F
-  | T_V T_not{push();} T_eq{push();} LIT
+T_B : T_V T_EQ{push();}T_EQ{push();} LIT
+  | T_V T_GT{push();}T_F
+  | T_V T_LT{push();}T_F
+  | T_V T_not{push();} T_EQ{push();} LIT
   |T_LRBKT T_B T_RRBKT
   | T_V {pushab();}
   ;
 
-T_F :T_eq{push();}LIT
+T_F :T_EQ{push();}LIT
   |LIT{pusha();}
   ;
 
@@ -107,43 +107,43 @@ COND  : B {codegen_assigna();}
       | T_not B{codegen_assigna();}
       ;
 
-B : V T_eq{push();}T_eq{push();} LIT
-  | V T_gt{push();}F
-  | V T_lt{push();}F
-  | V T_not{push();} T_eq{push();} LIT
+B : V T_EQ{push();}T_EQ{push();} LIT
+  | V T_GT{push();}F
+  | V T_LT{push();}F
+  | V T_not{push();} T_EQ{push();} LIT
   |T_LRBKT B T_RRBKT
   | V {pushab();}
   ;
 
-F :T_eq{push();}LIT
+F :T_EQ{push();}LIT
   |LIT{pusha();}
   ;
 
-V : ID{push();}
+V : T_ID{push();}
 
-T_V : ID{pushx();}
+T_V : T_ID{pushx();}
 
 ASSIGN_EXPR
-      : LIT {push();} T_eq {push();} EXP {codegen_assign();}
-      | TYPE LIT {push();} T_eq {push();} EXP {codegen_assign();}
+      : LIT {push();} T_EQ {push();} EXP {codegen_assign();}
+      | TYPE LIT {push();} T_EQ {push();} EXP {codegen_assign();}
       ;
 
 EXP
 	  : ADDSUB 
-	  | EXP T_lt {push();} ADDSUB {codegen();}
-	  | EXP T_gt {push();} ADDSUB {codegen();}
+	  | EXP T_LT {push();} ADDSUB {codegen();}
+	  | EXP T_GT {push();} ADDSUB {codegen();}
 	  ;
 
 ADDSUB
       : TERM
-      | EXP T_pl {push();} TERM {codegen();}
-      | EXP T_min {push();} TERM {codegen();}
+      | EXP T_PL {push();} TERM {codegen();}
+      | EXP T_MIN {push();} TERM {codegen();}
       ;
 
 TERM
 	  : FACTOR
-      | TERM T_mul {push();} FACTOR {codegen();}
-      | TERM T_div {push();} FACTOR {codegen();}
+      | TERM T_MUL {push();} FACTOR {codegen();}
+      | TERM T_DIV {push();} FACTOR {codegen();}
       ;
 
 FACTOR
@@ -152,17 +152,17 @@ FACTOR
   	;
 
 PRINT
-      : COUT T_lt T_lt STRING
-      | COUT T_lt T_lt STRING T_lt T_lt ENDL
+      : COUT T_LT T_LT STRING
+      | COUT T_LT T_LT STRING T_LT T_LT ENDL
       ;
 LIT
-      : ID {push();}
-      | NUM {push();}
+      : T_ID {push();}
+      | T_NUM {push();}
       ;
 TYPE
-      : INT
-      | CHAR
-      | FLOAT
+      : T_INT
+      | T_CHAR
+      | T_FLOAT
       ;
 
 %%
@@ -242,7 +242,10 @@ void pushab()
 
 
 void codegen()
-{
+{ 
+    // stack: i " " = i + 1
+
+    // printing T2 = i + 1
     strcpy(temp,"T");
     sprintf(tmp_i, "%d", temp_i);
     strcat(temp,tmp_i);
@@ -259,6 +262,8 @@ void codegen()
     top-=2;
     strcpy(st[top],temp);
 
+    // stack : i " " = T2 
+
 temp_i++;
 return ;
 }
@@ -269,48 +274,49 @@ strcpy(temp,"T");
 sprintf(tmp_i, "%d", temp_i);
 strcat(temp,tmp_i);
 printf("%s = %s %s %s %s\n",temp,st[top-3],st[top-2],st[top-1],st[top]);
-//printf("%d\n",strlen(st[top]));
+
 if(strlen(st[top])==1)
 {
-	//printf("hello");
-	
-    char t[20];
-	//printf("hello");
+  char t[20];
 	strcpy(t,st[top-2]);
 	strcat(t,st[top-1]);
   // >" "
 	q[quadlen].op = (char*)malloc(sizeof(char)*strlen(t));
-    q[quadlen].arg1 = (char*)malloc(sizeof(char)*strlen(st[top-3]));
-    q[quadlen].arg2 = (char*)malloc(sizeof(char)*strlen(st[top]));
-    q[quadlen].res = (char*)malloc(sizeof(char)*strlen(temp));
-    strcpy(q[quadlen].op,t);
-    strcpy(q[quadlen].arg1,st[top-3]);
-    strcpy(q[quadlen].arg2,st[top]);
-    strcpy(q[quadlen].res,temp);
-    quadlen++;
+  q[quadlen].arg1 = (char*)malloc(sizeof(char)*strlen(st[top-3]));
+  q[quadlen].arg2 = (char*)malloc(sizeof(char)*strlen(st[top]));
+  q[quadlen].res = (char*)malloc(sizeof(char)*strlen(temp));
+  strcpy(q[quadlen].op,t);
+  strcpy(q[quadlen].arg1,st[top-3]);
+  strcpy(q[quadlen].arg2,st[top]);
+  strcpy(q[quadlen].res,temp);
+  quadlen++;
     
 }
-else
+else // cases like i < 0 "  "
 {
 	q[quadlen].op = (char*)malloc(sizeof(char)*strlen(st[top-2]));
-    q[quadlen].arg1 = (char*)malloc(sizeof(char)*strlen(st[top-3]));
-    q[quadlen].arg2 = (char*)malloc(sizeof(char)*strlen(st[top-1]));
-    q[quadlen].res = (char*)malloc(sizeof(char)*strlen(temp));
-    strcpy(q[quadlen].op,st[top-2]);
-    strcpy(q[quadlen].arg1,st[top-3]);
-    strcpy(q[quadlen].arg2,st[top-1]);
-    strcpy(q[quadlen].res,temp);
-    quadlen++;
+  q[quadlen].arg1 = (char*)malloc(sizeof(char)*strlen(st[top-3]));
+  q[quadlen].arg2 = (char*)malloc(sizeof(char)*strlen(st[top-1]));
+  q[quadlen].res = (char*)malloc(sizeof(char)*strlen(temp));
+  strcpy(q[quadlen].op,st[top-2]);
+  strcpy(q[quadlen].arg1,st[top-3]);
+  strcpy(q[quadlen].arg2,st[top-1]);
+  strcpy(q[quadlen].res,temp);
+  quadlen++;
 }
 top-=4;
 
 temp_i++;
 strcpy(st[++top],temp); 
+
+
 return ;
 }
 
+// handles assignment expressions like int a = 3;
 void codegen_assign()
 {
+    // stack: i " " = T2
     printf("%s = %s\n",st[top-3],st[top]);
     q[quadlen].op = (char*)malloc(sizeof(char));
     q[quadlen].arg1 = (char*)malloc(sizeof(char)*strlen(st[top]));
@@ -321,6 +327,7 @@ void codegen_assign()
     strcpy(q[quadlen].res,st[top-3]);
     quadlen++;
     top-=2;
+
     return ;
 }
 
@@ -542,8 +549,11 @@ q[quadlen].op = (char*)malloc(sizeof(char)*5);
     return;
 }
 
+
+// handles lable befor condition
 void for1()
 {
+    // l_for is later used to refer to this lable
     l_for = lnum;
     printf("L%d: \n",lnum++);
     q[quadlen].op = (char*)malloc(sizeof(char)*6);
@@ -562,9 +572,13 @@ void for1()
 
 void for2()
 {
+    // doing T1 = not T0
+    // stack T0
     strcpy(temp,"T");
     sprintf(tmp_i, "%d", temp_i);
     strcat(temp,tmp_i);
+    // temp = T1
+
     printf("%s = not %s\n",temp,st[top]);
     q[quadlen].op = (char*)malloc(sizeof(char)*4);
     q[quadlen].arg1 = (char*)malloc(sizeof(char)*strlen(st[top]));
@@ -574,6 +588,9 @@ void for2()
     strcpy(q[quadlen].arg1,st[top]);
     strcpy(q[quadlen].res,temp);
     quadlen++;
+
+
+    // if T1 goto L1
     printf("if %s goto L%d\n",temp,lnum);
     q[quadlen].op = (char*)malloc(sizeof(char)*3);
     q[quadlen].arg1 = (char*)malloc(sizeof(char)*strlen(temp));
@@ -587,6 +604,7 @@ void for2()
     strcpy(q[quadlen].res,strcat(l,x));
     quadlen++;
 
+    // goto L2
     temp_i++;
     label[++ltop]=lnum;
     lnum++;
@@ -601,6 +619,8 @@ void for2()
     char l1[]="L";
     strcpy(q[quadlen].res,strcat(l1,x1));
     quadlen++;
+
+    // L3
     label[++ltop]=lnum;
     printf("L%d: \n",++lnum);
     q[quadlen].op = (char*)malloc(sizeof(char)*6);
@@ -613,15 +633,18 @@ void for2()
     char l2[]="L";
     strcpy(q[quadlen].res,strcat(l2,x2));
     quadlen++;
+
     return ;
     
- }
+}
+
+
 void for3()
-{
+{ 
+    // goto to first lable in for loop
     int x;
     x=label[ltop--];
     printf("goto L%d \n",l_for);
-
     q[quadlen].op = (char*)malloc(sizeof(char)*5);
     q[quadlen].arg1 = NULL;
     q[quadlen].arg2 = NULL;
@@ -633,9 +656,8 @@ void for3()
     strcpy(q[quadlen].res,strcat(l,jug));
     quadlen++;
 
-
-    printf("L%d: \n",x);
-
+    // goto L2
+    printf("L%d: \n",x);    
     q[quadlen].op = (char*)malloc(sizeof(char)*6);
     q[quadlen].arg1 = NULL;
     q[quadlen].arg2 = NULL;
@@ -653,6 +675,7 @@ void for3()
 
 void for4()
 {
+    // goto L3
     int x;
     x=label[ltop--];
     printf("goto L%d \n",lnum);
@@ -668,6 +691,8 @@ void for4()
     strcpy(q[quadlen].res,strcat(l,jug));
     quadlen++;
 
+
+    // L1:
     printf("L%d: \n",x);
 
     q[quadlen].op = (char*)malloc(sizeof(char)*6);
@@ -680,7 +705,8 @@ void for4()
     char l1[]="L";
     strcpy(q[quadlen].res,strcat(l1,jug1));
     quadlen++;
-    return ;
+
+    return;
 }
 
 void ternary1()
